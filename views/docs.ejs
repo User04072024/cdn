@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Prism.js untuk highlight code -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+  <style>
+    .code-container {
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #2d2d2d;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+    .copy-btn:hover {
+      background: #444;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header__logo">API Documentation</div>
+  </header>
+
+  <main class="main">
+    <section class="section">
+      <h1 class="section__title">Upload File API</h1>
+      <p class="section__description">Endpoint to upload files to the server.</p>
+
+      <div class="section__endpoint">
+        <h2 class="endpoint__title">Endpoint</h2>
+        <code class="endpoint__code">POST /api/upload</code>
+      </div>
+
+      <div class="section__parameters">
+        <h2 class="parameters__title">Request Body Parameters</h2>
+        <ul class="parameters__list">
+          <li class="parameters__item"><code>file</code>: The file to upload (multipart/form-data).</li>
+        </ul>
+      </div>
+
+      <div class="section__responses">
+        <h2 class="responses__title">Success Response</h2>
+        <pre class="responses__code"><code>true OK</code></pre>
+        <pre class="responses__body"><code>{
+  "creator": "FuadXyro",
+  "status": true,
+  "message": "File uploaded successfully",
+  "data": {
+    "name": "https://example.com/file/filename.ext",
+    "type": "application/pdf",
+    "size": 102400,
+    "expired": 1640995061613
+  }
+}</code></pre>
+      </div>
+
+      <div class="section__errors">
+        <h2 class="errors__title">Error Responses</h2>
+        <pre class="errors__code"><code>400 Bad Request</code></pre>
+        <pre class="errors__body"><code>{
+  "message": "No file uploaded."
+}</code></pre>
+        <pre class="errors__code"><code>400 Bad Request</code></pre>
+        <pre class="errors__body"><code>{
+  "message": "Sorry, that file is too large."
+}</code></pre>
+        <pre class="errors__code"><code>500 Internal Server Error</code></pre>
+        <pre class="errors__body"><code>{
+  "message": "Error uploading file."
+}</code></pre>
+      </div>
+
+      <div class="section__example">
+        <h2 class="example__title">Example Usage with JavaScript</h2>
+        <div class="code-container">
+          <button class="copy-btn" onclick="copyCode()">Copy</button>
+          <pre><code class="language-javascript">import fs from 'fs'
+import FormData from 'form-data'
+import axios from 'axios'
+
+// Upload file dari path lokal
+const uploadFile = async (filePath) => {
+  const formData = new FormData()
+  formData.append('file', fs.createReadStream(filePath))
+
+  try {
+    const response = await axios.post('https://cdn.cylic.biz.id/api/upload', formData, {
+      headers: formData.getHeaders()
+    })
+    console.log('Upload berhasil:', response.data)
+  } catch (error) {
+    console.error('UploadFile Error:', error.message)
+  }
+}
+
+// Upload buffer (misal gambar/video)
+const uploadImage = async (buffer) => {
+  try {
+    const url = \`https://cdn.cylic.biz.id/api/upload/to?url=\${encodeURIComponent(buffer)}&namefile=\${makeId(12)}\`
+    const response = await axios.get(url)
+    console.log('Upload berhasil:', response.data)
+  } catch (error) {
+    console.error('UploadImage Error:', error.message)
+  }
+}
+
+// Generator ID random
+function makeId(length) {
+  let result = ''
+  let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return result
+}
+
+// Contoh penggunaan
+uploadFile('./tmp/example.pdf')</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="footer__text">© 2024 FuadXyro CDN. All rights reserved. | by <a href="https://api.zenkey.my.id" class="footer__link">FuadXyro</a></p>
+  </footer>
+
+  <script>
+    function copyCode() {
+      const codeBlock = document.querySelector('.section__example code').innerText
+      navigator.clipboard.writeText(codeBlock).then(() => {
+        const btn = document.querySelector('.copy-btn')
+        btn.textContent = 'Copied!'
+        setTimeout(() => btn.textContent = 'Copy', 2000)
+      })
+    }
+  </script>
+</body>
+</html>
